@@ -1,0 +1,35 @@
+{
+  "name": "@roziscoding/format",
+  "version": "1.0.0",
+  "description": "Small formatting library based on a tagged template literal",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^4.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.1.0",
+    "nyc": "^15.1.0"
+  },
+  "scripts": {
+    "test": "tsc && nyc mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roziscoding/format.git"
+  },
+  "keywords": [
+    "format",
+    "template",
+    "literal",
+    "tagged"
+  ],
+  "author": "Roz <roz@rjmunhoz.me>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/roziscoding/format/issues"
+  },
+  "homepage": "https://github.com/roziscoding/format#readme"
+}
