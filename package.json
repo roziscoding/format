@@ -15,7 +15,10 @@
     "chai": "^4.2.0"
   },
   "scripts": {
-    "test": "tsc && nyc mocha --recursive"
+    "test": "tsc && nyc mocha --recursive",
+    "build": "tsc",
+    "build:clean": "rm -rf dist tsconfig.tsbuildinfo .nyc_output && npm run build",
+    "prepublish": "npm run build:clean && npm run test"
   },
   "repository": {
     "type": "git",
