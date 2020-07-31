@@ -31,5 +31,9 @@
   "bugs": {
     "url": "https://github.com/roziscoding/format/issues"
   },
-  "homepage": "https://github.com/roziscoding/format#readme"
+  "homepage": "https://github.com/roziscoding/format#readme",
+  "files": [
+    "dist/**/*.{d.ts,js}",
+    "!dist/types/*"
+  ]
 }
