@@ -7,11 +7,12 @@
     "test": "test"
   },
   "dependencies": {
-    "chai": "^4.2.0"
+
   },
   "devDependencies": {
     "mocha": "^8.1.0",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "chai": "^4.2.0"
   },
   "scripts": {
     "test": "tsc && nyc mocha --recursive"
