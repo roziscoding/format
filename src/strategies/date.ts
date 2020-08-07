@@ -1,4 +1,5 @@
 import { FormattingStrategy } from '../types/FormattingStrategy'
+import { GlobalOptions } from '../types/GlobalOptions'
 
 type DateFormat = {
   date: Date
@@ -9,16 +10,17 @@ export const fits = (obj: any): obj is DateFormat => {
   return Boolean(obj.date) && obj.date instanceof Date
 }
 
-export const format = (obj: DateFormat) => {
+export const format = (obj: DateFormat, globalOptions: GlobalOptions = {}) => {
   if (!fits(obj)) return obj
 
-  const { locale = 'pt-BR', ...options } = obj
-  return obj.date.toLocaleDateString(locale, options)
+  const locale = obj.locale || globalOptions.locale || 'pt-BR'
+
+  return obj.date.toLocaleDateString(locale, { ...globalOptions, ...obj })
 }
 
-export const strategy: FormattingStrategy<DateFormat> = {
+export const date: FormattingStrategy<DateFormat> = {
   fits,
   format
 }
 
-export default strategy
+export default date

@@ -1,3 +1,4 @@
+import { GlobalOptions } from '../types/GlobalOptions'
 import { FormattingStrategy } from '../types/FormattingStrategy'
 
 type TimeFormat = {
@@ -9,16 +10,17 @@ export const fits = (obj: any): obj is TimeFormat => {
   return Boolean(obj.time) && obj.time instanceof Date
 }
 
-export const format = (obj: TimeFormat) => {
+export const format = (obj: TimeFormat, globalOptions: GlobalOptions = {}) => {
   if (!fits(obj)) return obj
 
-  const { locale = 'pt-BR', ...options } = obj
-  return obj.time.toLocaleTimeString(locale, options)
+  const locale = obj.locale || globalOptions.locale || 'pt-BR'
+
+  return obj.time.toLocaleTimeString(locale, { ...globalOptions, ...obj })
 }
 
-export const strategy: FormattingStrategy<TimeFormat> = {
+export const time: FormattingStrategy<TimeFormat> = {
   fits,
   format
 }
 
-export default strategy
+export default time

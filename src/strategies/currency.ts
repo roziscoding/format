@@ -1,3 +1,4 @@
+import { GlobalOptions } from '../types/GlobalOptions'
 import { FormattingStrategy } from '../types/FormattingStrategy'
 
 const CURRENCIES = {
@@ -37,9 +38,9 @@ const CURRENCY_NAMES = Object.keys(CURRENCIES) as unknown as Currency
 type Currency = keyof typeof CURRENCIES
 
 
-type Options = { locale: string } & Intl.NumberFormatOptions
+type Config = { locale: string } & Intl.NumberFormatOptions
 
-type CurrencyFormat = Options & {
+type CurrencyFormat = Config & {
   [ c in keyof typeof CURRENCIES ]?: number
 }
 
@@ -51,19 +52,19 @@ export const fits = (obj: any): obj is CurrencyFormat => {
   return typeof obj[ currency ] === 'number'
 }
 
-export const format = (obj: CurrencyFormat) => {
+export const format = (obj: CurrencyFormat, globalOptions: GlobalOptions = {}) => {
   if (!fits(obj)) return obj
   const currency = getCurrency(obj)
   const amount = obj[ currency ]!
 
-  const { locale = 'pt-BR', ...options } = obj
+  const locale = obj.locale || globalOptions.locale || 'pt-BR'
 
-  return amount.toLocaleString(locale, { style: 'currency', currency, ...options })
+  return amount.toLocaleString(locale, { style: 'currency', currency, ...globalOptions, ...obj })
 }
 
-export const strategy: FormattingStrategy<CurrencyFormat> = {
+export const currency: FormattingStrategy<CurrencyFormat> = {
   fits,
   format
 }
 
-export default strategy
+export default currency

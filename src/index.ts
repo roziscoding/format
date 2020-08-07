@@ -1,16 +1,10 @@
 import strategies from './strategies'
+import { getFormat } from './get-format'
+import { GlobalOptions } from './types/GlobalOptions'
 
-export function format (strings: TemplateStringsArray, ...params: any[]) {
-  return strings.reduce((acc, string, index) => {
-    const param = params[ index ]
-    if (!param) return `${acc}${string}`
+export { getFormat }
 
-    const strategy = strategies.find(strategy => strategy.fits(param))
+export const format = getFormat(strategies, { locale: 'pt-BR' })
 
-    if (!strategy) return `${acc}${string}${param}`
+export const getFormatWithOptions = (options: GlobalOptions) => getFormat(strategies, options)
 
-    return `${acc}${string}${strategy.format(param)}`
-  }, '')
-}
-
-export default format
