@@ -4,15 +4,14 @@ module.exports = {
     node: true,
     mocha: true
   },
-  extends: ['standard', 'plugin:prettier/recommended'],
+  extends: ['standard', 'prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 11,
     sourceType: 'module'
   },
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint'],
   rules: {
-    'no-unused-vars': 'off',
-    'prettier/prettier': 'error'
+    'no-unused-vars': 'off'
   }
 }
