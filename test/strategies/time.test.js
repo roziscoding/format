@@ -5,7 +5,7 @@ describe('Strategies > Time', () => {
   const date = new Date('2020-01-01T00:00:00')
 
   describe('fits', () => {
-    it('Ignores objects that don\'t have a `time` key', () => {
+    it("Ignores objects that don't have a `time` key", () => {
       expect(time.fits({ something: date })).to.equal(false)
     })
 
@@ -24,7 +24,7 @@ describe('Strategies > Time', () => {
     })
 
     it('Ignores non-time params', () => {
-      expect(time.format({ something: 50 }).toString()).to.equal(({ something: 50 }).toString())
+      expect(time.format({ something: 50 }).toString()).to.equal({ something: 50 }.toString())
     })
   })
 })

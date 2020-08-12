@@ -5,7 +5,7 @@ describe('Strategies > Currency', () => {
   const amount = 50
 
   describe('fits', () => {
-    it('Ignores objects that don\'t have a currency key', () => {
+    it("Ignores objects that don't have a currency key", () => {
       expect(currency.fits({ something: amount })).to.equal(false)
     })
 
@@ -24,7 +24,9 @@ describe('Strategies > Currency', () => {
     })
 
     it('Ignores non-currency params', () => {
-      expect(currency.format({ something: amount }).toString()).to.equal(({ something: 50 }).toString())
+      expect(currency.format({ something: amount }).toString()).to.equal(
+        { something: 50 }.toString()
+      )
     })
 
     it('Respects locale', () => {

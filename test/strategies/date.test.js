@@ -5,7 +5,7 @@ describe('Strategies > Date', () => {
   const dateFixture = new Date('2020-01-01T00:00:00')
 
   describe('fits', () => {
-    it('Ignores objects that don\'t have a `date` key', () => {
+    it("Ignores objects that don't have a `date` key", () => {
       expect(date.fits({ something: dateFixture })).to.equal(false)
     })
 
@@ -24,7 +24,7 @@ describe('Strategies > Date', () => {
     })
 
     it('Ignores non-date params', () => {
-      expect(date.format({ something: 50 }).toString()).to.equal(({ something: 50 }).toString())
+      expect(date.format({ something: 50 }).toString()).to.equal({ something: 50 }.toString())
     })
   })
 })
