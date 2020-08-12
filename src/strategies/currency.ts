@@ -35,7 +35,7 @@ const CURRENCIES = {
   ZAR: 1, ZMW: 1, ZWL: 1
 }
 
-const CURRENCY_NAMES = (Object.keys(CURRENCIES) as unknown) as Currency
+const CURRENCY_NAMES = Object.keys(CURRENCIES) as Currency[]
 
 type Currency = keyof typeof CURRENCIES
 
@@ -46,19 +46,21 @@ type CurrencyFormat = Config &
     [c in keyof typeof CURRENCIES]?: number
   }
 
-const getCurrency = (obj: any): Currency =>
-  Object.keys(obj).find(key => CURRENCY_NAMES.includes(key)) as Currency
+const isCurrency = ([key, value]: any[]) =>
+  CURRENCY_NAMES.includes(key) && typeof value === 'number'
+
+const getCurrencyAndValue = (obj: any) => {
+  if (!obj) return []
+  return (Object.entries<number>(obj).find(isCurrency) || []) as [Currency, number]
+}
 
 export const fits = (obj: any): obj is CurrencyFormat => {
-  const currency = getCurrency(obj)
-  if (!currency) return false
-  return typeof obj[currency] === 'number'
+  return Object.entries(obj).some(isCurrency)
 }
 
 export const format = (obj: CurrencyFormat, globalOptions: GlobalOptions = {}) => {
   if (!fits(obj)) return obj
-  const currency = getCurrency(obj)
-  const amount = obj[currency]!
+  const [currency, amount] = getCurrencyAndValue(obj)
 
   const locale = obj.locale || globalOptions.locale || 'pt-BR'
 
