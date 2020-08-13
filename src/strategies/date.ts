@@ -13,7 +13,7 @@ export const fits = (obj: any): obj is DateFormat => {
 export const format = (obj: DateFormat, globalOptions: GlobalOptions = {}) => {
   if (!fits(obj)) return obj
 
-  const locale = obj.locale || globalOptions.locale || 'pt-BR'
+  const locale = obj.locale || globalOptions.locale
 
   return obj.date.toLocaleDateString(locale, { ...globalOptions, ...obj })
 }

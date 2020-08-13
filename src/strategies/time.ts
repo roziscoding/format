@@ -13,7 +13,7 @@ export const fits = (obj: any): obj is TimeFormat => {
 export const format = (obj: TimeFormat, globalOptions: GlobalOptions = {}) => {
   if (!fits(obj)) return obj
 
-  const locale = obj.locale || globalOptions.locale || 'pt-BR'
+  const locale = obj.locale || globalOptions.locale
 
   return obj.time.toLocaleTimeString(locale, { ...globalOptions, ...obj })
 }

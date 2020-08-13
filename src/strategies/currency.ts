@@ -62,7 +62,7 @@ export const format = (obj: CurrencyFormat, globalOptions: GlobalOptions = {}) =
   if (!fits(obj)) return obj
   const [currency, amount] = getCurrencyAndValue(obj)
 
-  const locale = obj.locale || globalOptions.locale || 'pt-BR'
+  const locale = obj.locale || globalOptions.locale
 
   return amount.toLocaleString(locale, { style: 'currency', currency, ...globalOptions, ...obj })
 }
