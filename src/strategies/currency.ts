@@ -1,5 +1,4 @@
 /* eslint-disable object-property-newline */
-import { GlobalOptions } from '../types/GlobalOptions'
 import { FormattingStrategy } from '../types/FormattingStrategy'
 
 // prettier-ignore
@@ -35,41 +34,44 @@ const CURRENCIES = {
   ZAR: 1, ZMW: 1, ZWL: 1
 }
 
-const CURRENCY_NAMES = Object.keys(CURRENCIES) as Currency[]
+const CURRENCY_NAMES = Object.keys(CURRENCIES) as Array<keyof typeof CURRENCIES>
 
-type Currency = keyof typeof CURRENCIES
+type Config = { locale?: string } & Intl.NumberFormatOptions
+type CurrencyValue = [keyof typeof CURRENCIES, number]
 
-type Config = { locale: string } & Intl.NumberFormatOptions
+type CurrencyStrategy = FormattingStrategy<CurrencyValue, Config>
 
-type CurrencyFormat = Config &
-  {
-    [c in keyof typeof CURRENCIES]?: number
-  }
+const isCurrency = (entry: any[]): entry is CurrencyValue =>
+  CURRENCY_NAMES.includes(entry[0]) && typeof entry[1] === 'number'
 
-const isCurrency = ([key, value]: any[]) =>
-  CURRENCY_NAMES.includes(key) && typeof value === 'number'
+export const extract: CurrencyStrategy['extract'] = obj => {
+  const value = Object.entries<number>(obj).find(isCurrency)
 
-const getCurrencyAndValue = (obj: any) => {
-  if (!obj) return []
-  return (Object.entries<number>(obj).find(isCurrency) || []) as [Currency, number]
+  if (!value) return undefined
+
+  const { [value[0]]: _key, ...localOptions } = obj
+
+  return [value, localOptions as Config] as const
 }
 
-export const fits = (obj: any): obj is CurrencyFormat => {
-  return Object.entries(obj).some(isCurrency)
+export const format: CurrencyStrategy['format'] = (
+  value,
+  globalOptions = {},
+  strategyOptions = {},
+  localOptions = {}
+) => {
+  const [currency, amount] = value
+  const options = { ...strategyOptions, ...localOptions }
+
+  const locale = options.locale || globalOptions.locale
+
+  return amount.toLocaleString(locale, { style: 'currency', currency, ...options })
 }
 
-export const format = (obj: CurrencyFormat, globalOptions: GlobalOptions = {}) => {
-  if (!fits(obj)) return obj
-  const [currency, amount] = getCurrencyAndValue(obj)
-
-  const locale = obj.locale || globalOptions.locale
-
-  return amount.toLocaleString(locale, { style: 'currency', currency, ...globalOptions, ...obj })
-}
-
-export const currency: FormattingStrategy<CurrencyFormat> = {
-  fits,
-  format
+export const currency: CurrencyStrategy = {
+  extract,
+  format,
+  namespace: 'currency'
 }
 
 export default currency

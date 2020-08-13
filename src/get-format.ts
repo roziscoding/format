@@ -2,14 +2,9 @@ import { GlobalOptions } from './types/GlobalOptions'
 import { FormattingStrategy } from './types/FormattingStrategy'
 import { StrategyArray } from './strategies'
 
-const defaultStrategy = {
-  format: (obj: any) => (typeof obj === 'string' ? obj : JSON.stringify(obj))
-}
+type Options = { global?: GlobalOptions } & Record<string, any>
 
-export function getFormat(
-  strategies: FormattingStrategy<any>[],
-  globalOptions: GlobalOptions = {}
-) {
+export function getFormat(strategies: FormattingStrategy<any, any>[], options: Options = {}) {
   return function format<TStrategies extends Array<any> = StrategyArray>(
     strings: TemplateStringsArray,
     ...params: TStrategies
@@ -18,9 +13,16 @@ export function getFormat(
       const param = params[index]
       if (!param) return `${acc}${string}`
 
-      const strategy = strategies.find(strategy => strategy.fits(param)) || defaultStrategy
+      const strategy = strategies.find(strategy => strategy.extract(param))
 
-      return `${acc}${string}${strategy.format(param, globalOptions)}`
+      if (!strategy) return `${acc}${string}${param}`
+
+      const [value, localOptions] = strategy.extract(param)!
+      const { [strategy.namespace]: strategyOptions, global: globalOptions = {} } = options
+
+      const formattedParam = strategy.format(value, globalOptions, strategyOptions, localOptions)
+
+      return `${acc}${string}${formattedParam}`
     }, '')
   }
 }

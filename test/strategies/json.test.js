@@ -7,24 +7,28 @@ describe('Strategies > JSON', () => {
     age: 23
   }
 
-  describe('fits', () => {
+  describe('extract', () => {
     it("Ignores objects that don't have a `json` key", () => {
-      expect(json.fits({ something: user })).to.equal(false)
+      expect(json.extract({ something: user })).to.equal(undefined)
     })
 
     it('Accepts any type for the `json` key', () => {
-      expect(json.fits({ json: 'something' })).to.equal(true)
+      expect(json.extract({ json: 'something' })).to.eql(['something', {}])
     })
   })
 
   describe('format', () => {
     it('Formats objects correctly', () => {
-      expect(json.format({ json: user })).to.equal(JSON.stringify(user))
+      expect(json.format(user)).to.equal(JSON.stringify(user))
     })
 
-    it('Uses the `indent` param', () => {
-      expect(json.format({ json: user, indent: 2 })).to.equal(JSON.stringify(user, null, 2))
-      expect(json.format({ json: user, indent: 4 })).to.equal(JSON.stringify(user, null, 4))
+    it('Respects the `indent` param', () => {
+      expect(json.format(user, undefined, undefined, { indent: 2 })).to.equal(
+        JSON.stringify(user, null, 2)
+      )
+      expect(json.format(user, undefined, undefined, { indent: 4 })).to.equal(
+        JSON.stringify(user, null, 4)
+      )
     })
   })
 })
