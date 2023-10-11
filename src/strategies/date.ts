@@ -1,24 +1,29 @@
 import { FormattingStrategy } from '../types/FormattingStrategy'
 
-type DateFormat = {
-  date: Date
-  locale?: string
-} & Intl.DateTimeFormatOptions
+type DateStrategy = FormattingStrategy<Date, Config>
 
-export const fits = (obj: any): obj is DateFormat => {
-  return Boolean(obj.date) && obj.date instanceof Date
+type Config = { locale?: string } & Intl.DateTimeFormatOptions
+
+export const extract = ({ date, ...localOptions }: any) =>
+  date instanceof Date ? ([date, localOptions] as const) : undefined
+
+export const format: DateStrategy['format'] = (
+  value,
+  globalOptions = {},
+  strategyOptions = {},
+  localOptions = {}
+) => {
+  const options = { ...strategyOptions, ...localOptions }
+
+  const locale = options.locale || globalOptions.locale
+
+  return value.toLocaleDateString(locale, options)
 }
 
-export const format = (obj: DateFormat) => {
-  if (!fits(obj)) return obj
-
-  const { locale = 'pt-BR', ...options } = obj
-  return obj.date.toLocaleDateString(locale, options)
+export const date: FormattingStrategy<Date, Config> = {
+  extract,
+  format,
+  namespace: 'date'
 }
 
-export const strategy: FormattingStrategy<DateFormat> = {
-  fits,
-  format
-}
-
-export default strategy
+export default date

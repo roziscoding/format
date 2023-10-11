@@ -3,28 +3,29 @@ const { expect } = require('chai')
 
 describe('Strategies > Date', () => {
   const dateFixture = new Date('2020-01-01T00:00:00')
+  const formattedDateFixture = dateFixture.toLocaleDateString()
 
-  describe('fits', () => {
-    it('Ignores objects that don\'t have a `date` key', () => {
-      expect(date.fits({ something: dateFixture })).to.equal(false)
+  describe('extract', () => {
+    it("Ignores objects that don't have a `date` key", () => {
+      expect(date.extract({ something: dateFixture })).to.equal(undefined)
     })
 
     it('Ignores object with a non-date `date` key', () => {
-      expect(date.fits({ date: 'something' })).to.equal(false)
+      expect(date.extract({ date: 'something' })).to.equal(undefined)
     })
 
     it('Accepts objects with a `date` key containing a Date', () => {
-      expect(date.fits({ date: dateFixture })).to.equal(true)
+      expect(date.extract({ date: dateFixture })).to.eql([dateFixture, {}])
     })
   })
 
   describe('format', () => {
     it('Formats date correctly', () => {
-      expect(date.format({ date: dateFixture })).to.equal('01/01/2020')
+      expect(date.format(dateFixture)).to.equal(formattedDateFixture)
     })
 
-    it('Ignores non-date params', () => {
-      expect(date.format({ something: 50 }).toString()).to.equal(({ something: 50 }).toString())
+    it('Respects locale', () => {
+      expect(date.format(dateFixture, { locale: 'pt-BR' })).to.equal('01/01/2020')
     })
   })
 })
